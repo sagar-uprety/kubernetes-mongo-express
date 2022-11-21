@@ -1,5 +1,5 @@
+# MondoDB Deployment
 apiVersion: apps/v1
-# MondoDB Deployment 
 kind: Deployment
 metadata:
   name: mongo-db-deployment
