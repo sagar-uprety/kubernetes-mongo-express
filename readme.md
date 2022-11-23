@@ -55,3 +55,55 @@ kubectl get configmap
 minikube service mongo-express-service
 ```
 You will get a service IP address you can use to access the application. Hurray!
+
+# StatefulSets Way: MongoDB- Mongo Express via Helm Charts
+
+We will use Linode for this purpose. However, you can do the same with other cloud providers. Just make sure to change the attributes accordingly. 
+-  We will Utilize Linode StorageClass for PersistantVolume (to persist our data from MongoDB)
+-  Use Linode NodeBalancer as the entrypoint to our cluster which sends the request to internal Ingress Controller and then finally to the Pods via Services
+  
+1. Setup a Linode Kubernetes Engine. Follow steps here
+2. Navigate to */helm-ingress-statefulsets-linode* directory
+3. Download kubeconfig and run the following commands:
+```bash
+  export KUBECONFIG={your-linode-kuberenetes-engine-kubeconfig-file}.yaml
+  chmod o-r ~./k8s-mongo-express-kubeconfig.yaml
+  chmod g-r ~./k8s-mongo-express-kubeconfig.yaml
+
+```
+
+4. Install [Helm](https://helm.sh/docs/intro/install/) if you haven't already. The following commands will install the mongodb StatefulSet with values from *mongodb-helm-values.yaml*. This also creates Persistent Volume in Linode for each statefulsets.
+```
+  helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+```
+  helm install mongodb --values=mongodb-helm-values.yaml bitnami/mongodb
+```
+5. Create MongoExpress Deployment and Service
+```
+  kubectl apply -f mongo-express.yaml
+```
+
+6.  Finaly, let's intall ingress-nginx controller in our cluster. This also creates Linode NodeBalancer cutomatically
+```
+helm repo add nginx-stable https://helm.nginx.com/stable
+```
+```
+helm install nginx-ingres ingress-nginx/ingress-nginx 
+```
+```
+kubectl apply -f ingress.yaml 
+```
+
+7. To delete the resources, you can simply use:
+```bash 
+helm delete mongodb //for statefulsets resources
+```
+```bash 
+helm delete ingress //for ingress resources
+```
+That's it! Our MongoDB StatefulSets and MongoExpress Application is deployed!
+
+## Contributions
+
+Contributions are highly welcomed. Please send a Pull Request with suggested changes or open an Issue to get things started!
