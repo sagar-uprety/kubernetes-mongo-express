@@ -5,3 +5,4 @@ persistence:
     storageClass: "linode-block-storage"
 auth:
     rootPassword: secret-root-pwd
+    
