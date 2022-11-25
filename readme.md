@@ -86,21 +86,23 @@ We will use Linode for this purpose. However, you can do the same with other clo
 
 6.  Finaly, let's intall ingress-nginx controller in our cluster. This also creates Linode NodeBalancer cutomatically
 ```
-helm repo add nginx-stable https://helm.nginx.com/stable
+  helm repo add nginx-stable https://helm.nginx.com/stable
 ```
 ```
-helm install nginx-ingres ingress-nginx/ingress-nginx 
-```
-```
-kubectl apply -f ingress.yaml 
+  helm install nginx-ingres ingress-nginx/ingress-nginx 
 ```
 
-7. To delete the resources, you can simply use:
+7. Go to your Linode Dashbaord->LoadBalancer and grab the hostname url. In ingress.yaml file, paste the value under spec->rules->host
+```
+  kubectl apply -f ingress.yaml 
+```
+
+8. To delete the resources, you can simply use:
 ```bash 
-helm delete mongodb //for statefulsets resources
+  helm delete mongodb //for statefulsets resources
 ```
 ```bash 
-helm delete ingress //for ingress resources
+  helm delete ingress //for ingress resources
 ```
 That's it! Our MongoDB StatefulSets and MongoExpress Application is deployed!
 
